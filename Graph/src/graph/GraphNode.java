@@ -4,12 +4,15 @@ import java.util.LinkedList;
 
 public class GraphNode<T> {
     T data;
-    public boolean marked;
+    public Graph.G_STATUS status;
     public LinkedList<GraphNode> adjacent;
+    public boolean isAdded;
+    public int depth = 0;
 
-    public GraphNode(T _data){
+    public GraphNode(T _data, Graph.G_STATUS st){
         data = _data;
-        marked = false;
+        status = st;
+        isAdded = false;
         adjacent = new LinkedList<GraphNode>();
     }
 }

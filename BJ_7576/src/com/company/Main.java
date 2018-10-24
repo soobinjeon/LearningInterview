@@ -1,11 +1,29 @@
-package graph;
+package com.company;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Stack;
 
-public class Graph {
+class GraphNode<T> {
+    T data;
+    public Graph.G_STATUS status;
+    public LinkedList<GraphNode> adjacent;
+    public boolean isAdded;
+    public int depth = 0;
+
+    public GraphNode(T _data, Graph.G_STATUS st){
+        data = _data;
+        status = st;
+        isAdded = false;
+        adjacent = new LinkedList<GraphNode>();
+    }
+}
+
+class Graph {
     public static enum G_STATUS {
         NONE(0), TRUE(1), FALSE(-1);
 
@@ -156,11 +174,66 @@ public class Graph {
         if(nofOutput < noneSize){
             System.out.println("-1");
         }
-            //System.out.println("Total="+nofOutput+", nl="+noneSize+", "+"-1");
+        //System.out.println("Total="+nofOutput+", nl="+noneSize+", "+"-1");
         else
         {
             System.out.println(ldepth);
         }
         //System.out.println();
+    }
+}
+
+public class Main {
+
+    public static void main(String[] args) throws IOException {
+	// write your code here
+        ArrayList<Integer> slist = new ArrayList<Integer>();
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String[] arrSize = br.readLine().split(" ");
+        int xsize = Integer.parseInt(arrSize[0]);
+        int ysize = Integer.parseInt(arrSize[1]);
+        if(xsize >= 2 && ysize <= 1000) {
+            Graph gr = new Graph(xsize * ysize);
+
+            //System.out.println(numofdata);
+            int ycnt = 0;
+            int totalcnt = 0;
+            while (ysize > ycnt) {
+                //String d = br.readLine();
+                String[] sdata = br.readLine().split(" ");
+                int xcnt = 0;
+                for (String sd : sdata) {
+                    int idata = Integer.parseInt(sd);
+                    int leftData = 0;
+                    int abovedata = 0;
+
+                    if (Graph.G_STATUS.getStatusbyNumberic(idata) == Graph.G_STATUS.TRUE) {
+                        slist.add(totalcnt);
+                    }
+                    if ((xcnt - 1) >= 0) {
+                        leftData = Integer.parseInt(sdata[xcnt - 1]);
+                        gr.addEdge(totalcnt - 1, Graph.G_STATUS.getStatusbyNumberic(leftData)
+                                , totalcnt, Graph.G_STATUS.getStatusbyNumberic(idata));
+                    }
+
+                    if ((ycnt - 1) >= 0) {
+                        gr.addEdge((xcnt + (xsize * (ycnt - 1))), Graph.G_STATUS.getStatusbyNumberic(0)
+                                , totalcnt, Graph.G_STATUS.getStatusbyNumberic(idata));
+                    }
+                    xcnt++;
+                    totalcnt++;
+                }
+                ycnt++;
+            }
+
+            /**
+             * 4 3
+             * 0 1 0 0
+             * 1 0 0 0
+             * 0 0 0 0
+             * 1(0) 4(0) 0(1) 2(1) 5(1) 8(1) 3(2) 6(2) 9(2) 7(3) 10(3) 11(4)
+             */
+            gr.BFS_E2(slist);
+        }
     }
 }

@@ -1,4 +1,4 @@
-package graph;
+package dijkstra;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -29,13 +29,13 @@ public class Graph {
         }
     }
 
-    private GraphNode<Integer>[] nodes;
+    public GraphNode<Integer>[] nodes;
     private int noneSize = 0;
     public Graph(int size){
         nodes = new GraphNode[size];
         for(int i =0;i<size;i++)
         {
-            nodes[i] = new GraphNode<Integer>(i, G_STATUS.NONE);
+            nodes[i] = new GraphNode<Integer>(i);
         }
     }
 
@@ -44,31 +44,34 @@ public class Graph {
             noneSize ++;
         }
     }
-    public void addEdge(int d1, G_STATUS d1_s, int d2, G_STATUS d2_s){
+    public void addEdge(int d1, int d2){
+        addEdge(d1, d2, 0);
+    }
+    public void addEdge(int d1, int d2, int distance){
         GraphNode<Integer> n1 = nodes[d1];
         GraphNode<Integer> n2 = nodes[d2];
 
         if(false == n1.isAdded)
         {
-            n1.status = d1_s;
             n1.isAdded = true;
-            addNoneSize(d1_s);
         }
 
         if(false == n2.isAdded)
         {
-            n2.status = d2_s;
             n2.isAdded = true;
-            addNoneSize(d2_s);
         }
 
         if(false == n1.adjacent.contains(n2)){
-            n1.adjacent.add(n2);
+            n1.addAdjacent(n2, distance);
         }
 
         if(false == n2.adjacent.contains(n1)){
-            n2.adjacent.add(n1);
+            n2.addAdjacent(n1, distance);
         }
+    }
+
+    public GraphNode getNodebyID(int id){
+        return nodes[id];
     }
 
     public void DFS(int i){
